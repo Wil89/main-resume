@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# {w} Wilber Ulloa — Interactive Resume
+
+A scroll-driven, animated personal resume built with Next.js, GSAP, and Tailwind CSS. It presents the same content in two distinct modes toggled from the nav: a clean **Preview** view and a terminal-style **Code** view.
+
+## Screenshots
+
+### Preview Mode
+The hero animates on scroll — logo and toggle slide to nav positions, headline scales up, then the about section pins and transitions into a contact form.
+
+![Preview mode](docs/preview-mode.png)
+
+### Code Mode
+Slides in from the right. Left panel stays fixed (profile photo); right panel scrolls independently through the full resume in a neon terminal aesthetic.
+
+![Code mode](docs/code-mode.png)
+
+## Features
+
+- **Scroll-driven animations** via GSAP ScrollTrigger — pinned sections, scrubbed timelines, and snap points
+- **Two resume modes** — Preview (design-forward) and Code (terminal-style), toggled with a slide animation
+- **Contact form reveal** — about text fades up, contact form rises from below the fold
+- **Logo crossfade** — black → white as the dark About section enters the viewport
+- **Independent panel scroll** in Code mode — image stays fixed, content panel scrolls without a visible scrollbar
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org) (App Router)
+- [GSAP](https://gsap.com) + ScrollTrigger
+- [Tailwind CSS](https://tailwindcss.com)
+- TypeScript
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+├── page.tsx                        # Root — all GSAP scroll animations live here
+├── ui/components/
+│   ├── preview/
+│   │   ├── about.tsx               # About section (rendered by page.tsx)
+│   │   ├── contact.tsx             # Contact form (animated in from below)
+│   │   ├── nav-toggle.tsx          # Preview / Code toggle
+│   │   └── navbar.tsx
+│   └── code/
+│       ├── code.tsx                # Terminal resume layout
+│       ├── experience.tsx
+│       └── education.tsx
+└── data/
+    └── constants.ts                # Work experience and education data
+```
