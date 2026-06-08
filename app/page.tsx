@@ -75,7 +75,7 @@ export default function Home() {
 
         gsap.set(logoEl, {
           x: vw / 2 - logoW / 2,
-          y: vh / 2 - logoH / 2,
+          y: vh / 2 - logoH ,
           opacity: 1,
         });
         gsap.set("#headline", { scale: MOBILE_HEADLINE_SCALE_START });

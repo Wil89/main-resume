@@ -1,6 +1,5 @@
 "use client";
 
-import clsx from "clsx";
 import { ToggleValue } from "@/app/page";
 
 export interface ToggleProps {
