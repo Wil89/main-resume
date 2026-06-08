@@ -16,17 +16,13 @@ export function NavToggle({ section, handleChange }: ToggleProps) {
         className="absolute w-[85px] sm:w-[98px] h-[40px] bg-gray-300 rounded-full z-1"
       />
       <button
-        className={clsx("z-5 text-sm sm:text-base p-1 sm:p-2 w-[85px] sm:w-[98px] h-[40px] text-black cursor-pointer", {
-          "font-semibold": section === "Preview",
-        })}
+        className="z-5 text-sm sm:text-base p-1 sm:p-2 w-[85px] sm:w-[98px] h-[40px] text-black cursor-pointer font-semibold"
         onClick={() => handleChange("Preview")}
       >
         Preview
       </button>
       <button
-        className={clsx("z-5 text-sm sm:text-base p-1 sm:p-2 w-[85px] sm:w-[98px] h-[40px] text-black cursor-pointer", {
-          "font-semibold": section === "Code",
-        })}
+        className="z-5 text-sm sm:text-base p-1 sm:p-2 w-[85px] sm:w-[98px] h-[40px] text-black cursor-pointer font-semibold"
         onClick={() => handleChange("Code")}
       >
         Code

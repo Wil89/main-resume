@@ -16,7 +16,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 const LOGO_W = 750;
 const LOGO_W_MOBILE = 330;
 const LOGO_H = 300;
+const LOGO_H_MOBILE = 132;
 const NAV_LOGO_W = 215;
+const NAV_LOGO_W_MOBILE = 160;
 const PAD = 40;
 
 const MOBILE_TOGGLE_SCALE = 0.8;
@@ -225,6 +227,9 @@ export default function Home() {
     // contextSafe handlers run outside GSAP's matchMedia scope, so we
     // check the breakpoint manually at call time.
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const LOGO_WIDTH = isMobile ? LOGO_W_MOBILE : LOGO_W;
+    const NAV_LOGO = isMobile ? NAV_LOGO_W_MOBILE : NAV_LOGO_W;
+    const LOGO_HEIGHT = isMobile ? LOGO_H_MOBILE : LOGO_H;
 
     setSection(newSection);
     gsap.to("#slider", {
@@ -245,8 +250,8 @@ export default function Home() {
       gsap.to("#code", { xPercent: 0, duration: 0.6, ease: "power2.inOut" });
       gsap.to(logoEl, {
         x: PAD,
-        y: PAD,
-        scale: NAV_LOGO_W / LOGO_W,
+        y: PAD - 8,
+        scale: NAV_LOGO / LOGO_WIDTH,
         transformOrigin: "top left",
         ease: "power2.inOut",
         duration: 0.5,
@@ -263,8 +268,8 @@ export default function Home() {
     } else {
       gsap.to("#code", { xPercent: 100, duration: 0.6, ease: "power2.inOut" });
       gsap.to(logoEl, {
-        x: vw / 2 - LOGO_W / 2,
-        y: vh / 2 - LOGO_H / 2,
+        x: vw / 2 - LOGO_WIDTH / 2,
+        y: vh / 2 - LOGO_HEIGHT / 2,
         scale: 1,
         transformOrigin: "50% 50%",
         ease: "power2.inOut",
