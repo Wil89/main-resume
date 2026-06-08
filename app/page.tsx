@@ -38,6 +38,14 @@ export default function Home() {
 
   const { contextSafe } = useGSAP(
     () => {
+      // iOS fires scroll events asynchronously — normalizeScroll intercepts
+      // touchstart/touchmove at the DOM level so ScrollTrigger reads position
+      // synchronously, in sync with the user's finger.
+      ScrollTrigger.normalizeScroll(true);
+      // Prevent Safari's address bar show/hide from triggering ScrollTrigger
+      // recalculations on every scroll — those cause constant micro-jitters.
+      ScrollTrigger.config({ ignoreMobileResize: true });
+
       const mm = gsap.matchMedia();
 
       const vw = window.innerWidth;
@@ -85,7 +93,9 @@ export default function Home() {
             trigger: "#hero",
             start: "top top",
             end: "+=100%",
-            scrub: 1,
+            // 0.3 on mobile: a touch swipe can jump 600px in 80ms — scrub:1
+            // means the animation would trail 1 second behind the finger.
+            scrub: 0.3,
             pin: true,
             anticipatePin: 1,
             snap: {
