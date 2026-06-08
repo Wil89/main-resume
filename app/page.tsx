@@ -104,7 +104,7 @@ export default function Home() {
             snap: {
               snapTo: [0, 1],
               duration: { min: 0.1, max: 0.2 },
-              delay: 0.1,
+              delay: 0.3, // must be >= scrub to avoid fighting
               ease: "power2.inOut",
             },
           },
@@ -164,7 +164,7 @@ export default function Home() {
             snap: {
               snapTo: [0, 1],
               duration: { min: 0.1, max: 0.2 },
-              delay: 0.1,
+              delay: 0.8, // must be >= scrub; 0.8 vs 1.0 is a slight concession for snappier feel
               ease: "power2.inOut",
             },
           },
@@ -198,6 +198,15 @@ export default function Home() {
             start: "top bottom",
             end: "top top",
             scrub: 1,
+            // Array form (velocity-based) is correct here: the user is scrolling
+            // with intent — snap in their direction of travel.
+            // 0 = Hero fully visible (About offscreen), 1 = About fully in view.
+            snap: {
+              snapTo: [0, 1],
+              duration: { min: 0.3, max: 0.6 },
+              delay: 0.8,
+              ease: "power2.inOut",
+            },
           },
         })
         .to("#logo-white-overlay", { opacity: 1, ease: "none" }, 0);
@@ -213,9 +222,13 @@ export default function Home() {
             scrub: 1,
             pin: true,
             snap: {
-              snapTo: [0, 1],
-              duration: { min: 0.2, max: 0.5 },
-              delay: 0.2,
+              // Array form uses scroll velocity to pick direction — arriving
+              // from Hero with forward momentum would auto-snap to contact.
+              // Function form uses only progress value, ignoring velocity:
+              // user must scroll past 65% before committing to contact form.
+              snapTo: (value) => (value > 0.65 ? 1 : 0),
+              duration: { min: 0.2, max: 0.4 },
+              delay: 0.8,
               ease: "power2.inOut",
             },
           },
