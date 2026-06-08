@@ -41,7 +41,10 @@ export default function Home() {
       // iOS fires scroll events asynchronously — normalizeScroll intercepts
       // touchstart/touchmove at the DOM level so ScrollTrigger reads position
       // synchronously, in sync with the user's finger.
-      ScrollTrigger.normalizeScroll(true);
+      // ignore: "#code" — when a touch starts inside the Code overlay, GSAP
+      // steps aside and lets the browser handle it natively so internal
+      // scroll still works.
+      ScrollTrigger.normalizeScroll({ ignore: "#code" });
       // Prevent Safari's address bar show/hide from triggering ScrollTrigger
       // recalculations on every scroll — those cause constant micro-jitters.
       ScrollTrigger.config({ ignoreMobileResize: true });
