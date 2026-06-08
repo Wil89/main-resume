@@ -75,7 +75,7 @@ export default function Home() {
 
         gsap.set(logoEl, {
           x: vw / 2 - logoW / 2,
-          y: vh / 2 - logoH ,
+          y: vh / 2 - logoH,
           opacity: 1,
         });
         gsap.set("#headline", { scale: MOBILE_HEADLINE_SCALE_START });
@@ -231,6 +231,8 @@ export default function Home() {
     const NAV_LOGO = isMobile ? NAV_LOGO_W_MOBILE : NAV_LOGO_W;
     const LOGO_HEIGHT = isMobile ? LOGO_H_MOBILE : LOGO_H;
 
+    const LOGO_PREVIEW_HEIGHT = isMobile ? LOGO_HEIGHT : LOGO_HEIGHT / 2;
+
     setSection(newSection);
     gsap.to("#slider", {
       xPercent: newSection === "Code" ? 100 : 0,
@@ -269,7 +271,7 @@ export default function Home() {
       gsap.to("#code", { xPercent: 100, duration: 0.6, ease: "power2.inOut" });
       gsap.to(logoEl, {
         x: vw / 2 - LOGO_WIDTH / 2,
-        y: vh / 2 - LOGO_HEIGHT / 2,
+        y: vh / 2 - LOGO_PREVIEW_HEIGHT,
         scale: 1,
         transformOrigin: "50% 50%",
         ease: "power2.inOut",
