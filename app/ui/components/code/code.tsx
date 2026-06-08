@@ -16,14 +16,14 @@ export function Code() {
     >
       {/* Left panel — never scrolls, image stays pinned */}
       <div className="w-full sm:w-[20%] shrink-0 flex flex-col items-center pt-28 sm:pt-48 px-8">
-        <div className="relative w-[150px] h-[150px] sm:w-[280px] sm:h-[280px] mask-b-from-20% mask-b-top-80% sm:mask-none pb-2">
+        <div className="relative w-[150px] h-[150px] sm:w-[280px] sm:h-[280px]">
           <Image src="/profile-rounded.png" alt="Profile Image" fill />
         </div>
       </div>
 
       {/* Right panel — scrolls independently, scrollbar hidden */}
       <div
-        className="flex-1 overflow-y-scroll pt-12 sm:pt-48 pb-20 pr-6 sm:pr-20 pl-6 [&::-webkit-scrollbar]:hidden"
+        className="flex-1 overflow-y-scroll pt-12 sm:pt-48 pb-20 pr-6 sm:pr-20 pl-6 [&::-webkit-scrollbar]:hidden mask-t-from-90% mask-t-to-100%"
         style={{ scrollbarWidth: "none" }}
       >
         <div className="flex flex-col justify-start">
