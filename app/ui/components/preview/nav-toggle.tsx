@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import clsx from "clsx";
 import { ToggleValue } from "@/app/page";
 
@@ -10,29 +9,20 @@ export interface ToggleProps {
 }
 
 export function NavToggle({ section, handleChange }: ToggleProps) {
-  const container = useRef(null);
-
   return (
-    <div
-      className="shrink-0 rounded-full bg-gray-500 p-1.5 flex relative"
-      ref={container}
-    >
+    <div className="shrink-0 rounded-full bg-gray-500 py-1.5 px-1 sm:px-1.5 flex relative">
       <div
         id="slider"
-        className="absolute w-[98] h-[40] bg-gray-300 rounded-full z-1"
+        className="absolute w-[85px] sm:w-[98px] h-[40px] bg-gray-300 rounded-full z-1"
       />
       <button
-        className={clsx("z-5 p-2 w-[98px] text-black cursor-pointer", {
-          "font-semibold": section === "Preview",
-        })}
+        className="z-5 text-sm sm:text-base p-1 sm:p-2 w-[85px] sm:w-[98px] h-[40px] text-black cursor-pointer font-semibold"
         onClick={() => handleChange("Preview")}
       >
         Preview
       </button>
       <button
-        className={clsx("z-5 p-2 w-[98px] text-black cursor-pointer", {
-          "font-semibold": section === "Code",
-        })}
+        className="z-5 text-sm sm:text-base p-1 sm:p-2 w-[85px] sm:w-[98px] h-[40px] text-black cursor-pointer font-semibold"
         onClick={() => handleChange("Code")}
       >
         Code
