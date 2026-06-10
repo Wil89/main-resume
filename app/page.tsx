@@ -40,6 +40,9 @@ export default function Home() {
   // tweens, so a rapid re-toggle must kill these explicitly — otherwise a
   // stale slide-out onComplete re-enables ScrollTriggers while in Code mode.
   const modeTweensRef = useRef<gsap.core.Tween[]>([]);
+  // Set by useGSAP; invoked (debounced) when the viewport settles at a new
+  // size. Lives on a ref so the plain useEffect below can reach it.
+  const relayoutRef = useRef<(() => "retry" | void) | null>(null);
 
   const { contextSafe } = useGSAP(
     () => {
@@ -54,35 +57,30 @@ export default function Home() {
       // recalculations on every scroll — those cause constant micro-jitters.
       ScrollTrigger.config({ ignoreMobileResize: true });
 
-      const mm = gsap.matchMedia();
-
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
       const logoEl = document.getElementById("logo")!;
       const toggleEl = document.getElementById("nav-toggle")!;
-      const toggleW = toggleEl.offsetWidth;
+      const heroEl = document.getElementById("hero")!;
 
-      // Common
+      // Common (the logo/toggle initial positions are owned by the
+      // responsive setup blocks below, which both run on setup)
       gsap.set("#code", { xPercent: 100 });
-      gsap.set(logoEl, {
-        x: vw / 2 - LOGO_W / 2,
-        y: vh / 2 - LOGO_H / 2,
-        opacity: 1,
-      });
-      gsap.set(toggleEl, {
-        x: vw / 2 - toggleW / 2,
-        y: PAD,
-        opacity: 1,
-      });
+
+      // All vertical math measures the hero element (h-dvh) instead of
+      // window.innerHeight: on iOS Safari the two disagree while the dynamic
+      // toolbars are visible, and the headline/contact are laid out by CSS
+      // against dvh — measuring the element keeps the JS positions in the
+      // same coordinate system as the CSS layout.
+      const lastLayout = { w: 0, h: 0 };
+      let mm: gsap.MatchMedia | null = null;
 
       /**
        * Mobile — toggle shrinks to the corner, headline scales less
        */
-      mm.add("(max-width: 767px)", () => {
-        // Re-capture dimensions: the callback re-runs on every resize that
-        // crosses this breakpoint, so we want fresh values each time.
+      const setupMobileHero = () => {
+        // Re-capture dimensions: this re-runs on breakpoint changes and on
+        // viewport-settle relayouts, so we want fresh values each time.
         const vw = window.innerWidth;
-        const vh = window.innerHeight;
+        const vh = heroEl.offsetHeight;
         const toggleW = toggleEl.offsetWidth;
         // Read from the DOM so the JS position always matches whatever CSS renders —
         // no risk of the constant drifting out of sync with the Tailwind class.
@@ -168,14 +166,14 @@ export default function Home() {
         // freshly created one must match, or it scrubs behind the overlay.
         if (sectionRef.current === "Code")
           heroTl.scrollTrigger?.disable(false);
-      });
+      };
 
       /**
        * Desktop — original behavior, no changes
        */
-      mm.add("(min-width: 768px)", () => {
+      const setupDesktopHero = () => {
         const vw = window.innerWidth;
-        const vh = window.innerHeight;
+        const vh = heroEl.offsetHeight;
         const toggleW = toggleEl.offsetWidth;
         const logoW = logoEl.offsetWidth;
 
@@ -241,7 +239,17 @@ export default function Home() {
 
         if (sectionRef.current === "Code")
           heroTl.scrollTrigger?.disable(false);
-      });
+      };
+
+      const setupResponsive = () => {
+        mm?.revert();
+        mm = gsap.matchMedia();
+        lastLayout.w = window.innerWidth;
+        lastLayout.h = heroEl.offsetHeight;
+        mm.add("(max-width: 767px)", setupMobileHero);
+        mm.add("(min-width: 768px)", setupDesktopHero);
+      };
+      setupResponsive();
 
       // Phase 2: logo crossfade as About scrolls up
       gsap
@@ -265,8 +273,8 @@ export default function Home() {
         .to("#logo-white-overlay", { opacity: 1, ease: "none" }, 0);
 
       // Phase 3: About pins — text slides up, contact form rises from below
-      gsap.set("#contact-form", { y: window.innerHeight, opacity: 0 });
-      gsap
+      gsap.set("#contact-form", { y: heroEl.offsetHeight, opacity: 0 });
+      const aboutTl = gsap
         .timeline({
           scrollTrigger: {
             trigger: "#about",
@@ -292,6 +300,24 @@ export default function Home() {
           duration: 0.6,
         })
         .to("#contact-form", { y: 0, opacity: 1, duration: 0.8 }, "<+=0.3");
+
+      // Re-measures and rebuilds the hero layer after the real viewport
+      // changes (iOS toolbars settling, rotation, window resize). Returns
+      // "retry" while the user is actively scrolling so the caller can
+      // re-schedule — rebuilding mid-scrub would visibly yank the elements.
+      relayoutRef.current = () => {
+        if (ScrollTrigger.isScrolling()) return "retry";
+        const w = window.innerWidth;
+        const h = heroEl.offsetHeight;
+        if (w === lastLayout.w && Math.abs(h - lastLayout.h) < 2) return;
+        setupResponsive();
+        // The contact form's offscreen anchor embeds a height; re-anchor it
+        // as long as its intro hasn't run (afterwards the timeline owns it)
+        if (aboutTl.progress() === 0) {
+          gsap.set("#contact-form", { y: h, opacity: 0 });
+        }
+        ScrollTrigger.refresh();
+      };
     },
     { scope: containerRef },
   );
@@ -310,9 +336,25 @@ export default function Home() {
     };
     codeEl.addEventListener("wheel", blockScrollChain, { passive: false });
     codeEl.addEventListener("touchmove", blockScrollChain, { passive: false });
+
+    // iOS Safari resizes the real viewport when its toolbars collapse/expand.
+    // ScrollTrigger's own resize handling is silenced (ignoreMobileResize) to
+    // avoid mid-scroll thrash, so re-measure here once the viewport settles.
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+    const scheduleRelayout = () => {
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        if (relayoutRef.current?.() === "retry") scheduleRelayout();
+      }, 250);
+    };
+    window.addEventListener("resize", scheduleRelayout);
+    window.visualViewport?.addEventListener("resize", scheduleRelayout);
     return () => {
       codeEl.removeEventListener("wheel", blockScrollChain);
       codeEl.removeEventListener("touchmove", blockScrollChain);
+      clearTimeout(settleTimer);
+      window.removeEventListener("resize", scheduleRelayout);
+      window.visualViewport?.removeEventListener("resize", scheduleRelayout);
     };
   }, []);
 
@@ -321,7 +363,9 @@ export default function Home() {
     if (newSection === section) return;
 
     const vw = window.innerWidth;
-    const vh = window.innerHeight;
+    // hero is h-dvh — measure it rather than window.innerHeight, which can
+    // disagree with the CSS viewport on iOS Safari (see the note in useGSAP)
+    const vh = document.getElementById("hero")!.offsetHeight;
     const logoEl = document.getElementById("logo")!;
     const toggleEl = document.getElementById("nav-toggle")!;
     const toggleW = toggleEl.offsetWidth;
