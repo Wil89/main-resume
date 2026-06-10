@@ -605,27 +605,33 @@ export default function Home() {
             <div className="flex flex-col-reverse sm:flex-row items-center gap-1 sm:gap-4">
               <span className="text-black text-lg font-extralight flex items-center gap-1">
                 wuj890312@gmail.com{" "}
-                <Link href={"#contact-form"}>
+                <a target="_blank" href="" rel="noopener noreferrer">
                   <ArrowUpRight className="font-extralight" />
-                </Link>
+                </a>
                 <span className="text-3xl hidden sm:block">&middot;</span>
               </span>
               <span className="text-black text-lg font-extralight flex items-center gap-1">
                 Whatsapp
-                <Link href={"https://wa.me/34695135544"}>
+                <a
+                  target="_blank"
+                  href={"https://wa.me/34695135544"}
+                  rel="noopener noreferrer"
+                >
                   <ArrowUpRight />
-                </Link>
+                </a>
                 <span className="text-3xl hidden sm:block">&middot;</span>
               </span>
               <span className="text-black text-lg font-extralight flex items-center gap-1">
                 LinkedIn
-                <Link
+                <a
+                  target="_blank"
                   href={
                     "https://www.linkedin.com/in/wilber-ulloa-jorge-868960a0/"
                   }
+                  rel="noopener noreferrer"
                 >
                   <ArrowUpRight />
-                </Link>
+                </a>
               </span>
             </div>
           </div>

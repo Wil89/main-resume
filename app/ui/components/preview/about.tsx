@@ -1,4 +1,6 @@
-import { Contact } from "./contact";
+// import { Contact } from "./contact";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 export function About() {
   return (
@@ -14,13 +16,40 @@ export function About() {
         wizard and a human-in-the-loop data pipeline at enterprise scale.
       </p>
       <div
-        id="about-contact-info"
+        id="about-contact"
         className="shrink-0 text-center absolute bottom-8"
       >
-        <p className="text-white text-lg font-extralight text-center">
-          Seville, Spain &nbsp;&middot;&nbsp; +34 695 135 544
-          &nbsp;&middot;&nbsp; wuj890312@gmail.com
-        </p>
+        {/* <p className="text-black text-lg font-extralight">Seville, Spain</p> */}
+        <div className="flex flex-col-reverse sm:flex-row items-center gap-1 sm:gap-4">
+          <span className="text-gray-400 text-lg font-extralight flex items-center gap-1">
+            wuj890312@gmail.com{" "}
+            <a target="_blank" href="" rel="noopener noreferrer">
+              <ArrowUpRight className="font-extralight" />
+            </a>
+            <span className="text-3xl hidden sm:block">&middot;</span>
+          </span>
+          <span className="text-gray-400 text-lg font-extralight flex items-center gap-1">
+            Whatsapp
+            <a
+              target="_blank"
+              href={"https://wa.me/34695135544"}
+              rel="noopener noreferrer"
+            >
+              <ArrowUpRight />
+            </a>
+            <span className="text-3xl hidden sm:block">&middot;</span>
+          </span>
+          <span className="text-gray-400 text-lg font-extralight flex items-center gap-1">
+            LinkedIn
+            <a
+              target="_blank"
+              href={"https://www.linkedin.com/in/wilber-ulloa-jorge-868960a0/"}
+              rel="noopener noreferrer"
+            >
+              <ArrowUpRight />
+            </a>
+          </span>
+        </div>
       </div>
       {/* <Contact /> */}
     </div>
