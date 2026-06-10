@@ -106,6 +106,7 @@ export default function Home() {
             transformOrigin: "top right",
           });
         } else {
+          gsap.set("#contact", { opacity: 0, y: 300 });
           gsap.set(logoEl, {
             x: vw / 2 - logoW / 2,
             y: vh / 2 - logoH,
@@ -162,7 +163,8 @@ export default function Home() {
             "#headline",
             { y: -(vh / 3.5), scale: 1, ease: "power2.inOut" },
             "<",
-          );
+          )
+          .to("#contact", { opacity: 1, y: 0, ease: "power2.inOut" }, "<");
 
         // Every other ScrollTrigger is disabled while in Code mode — a
         // freshly created one must match, or it scrubs behind the overlay.
