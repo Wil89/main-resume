@@ -22,7 +22,7 @@ export function About() {
           &nbsp;&middot;&nbsp; wuj890312@gmail.com
         </p>
       </div>
-      <Contact />
+      {/* <Contact /> */}
     </div>
   );
 }

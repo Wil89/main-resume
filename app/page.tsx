@@ -8,6 +8,8 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { NavToggle } from "./ui/components/preview/nav-toggle";
 import { About } from "./ui/components/preview/about";
 import { Code } from "./ui/components/code/code";
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 export type ToggleValue = "Preview" | "Code";
 
@@ -164,8 +166,7 @@ export default function Home() {
 
         // Every other ScrollTrigger is disabled while in Code mode — a
         // freshly created one must match, or it scrubs behind the overlay.
-        if (sectionRef.current === "Code")
-          heroTl.scrollTrigger?.disable(false);
+        if (sectionRef.current === "Code") heroTl.scrollTrigger?.disable(false);
       };
 
       /**
@@ -237,8 +238,7 @@ export default function Home() {
             "<",
           );
 
-        if (sectionRef.current === "Code")
-          heroTl.scrollTrigger?.disable(false);
+        if (sectionRef.current === "Code") heroTl.scrollTrigger?.disable(false);
       };
 
       const setupResponsive = () => {
@@ -273,33 +273,33 @@ export default function Home() {
         .to("#logo-white-overlay", { opacity: 1, ease: "none" }, 0);
 
       // Phase 3: About pins — text slides up, contact form rises from below
-      gsap.set("#contact-form", { y: heroEl.offsetHeight, opacity: 0 });
-      const aboutTl = gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: "#about",
-            start: "top top",
-            end: "+=100%",
-            scrub: 1,
-            pin: true,
-            snap: {
-              // Array form uses scroll velocity to pick direction — arriving
-              // from Hero with forward momentum would auto-snap to contact.
-              // Function form uses only progress value, ignoring velocity:
-              // user must scroll past 65% before committing to contact form.
-              snapTo: (value) => (value > 0.65 ? 1 : 0),
-              duration: { min: 0.2, max: 0.4 },
-              delay: 0.8,
-              ease: "power2.inOut",
-            },
-          },
-        })
-        .to(["#about-text", "#about-contact-info"], {
-          y: -120,
-          opacity: 0,
-          duration: 0.6,
-        })
-        .to("#contact-form", { y: 0, opacity: 1, duration: 0.8 }, "<+=0.3");
+      // gsap.set("#contact-form", { y: heroEl.offsetHeight, opacity: 0 });
+      // const aboutTl = gsap
+      //   .timeline({
+      //     scrollTrigger: {
+      //       trigger: "#about",
+      //       start: "top top",
+      //       end: "+=100%",
+      //       scrub: 1,
+      //       pin: true,
+      //       snap: {
+      //         // Array form uses scroll velocity to pick direction — arriving
+      //         // from Hero with forward momentum would auto-snap to contact.
+      //         // Function form uses only progress value, ignoring velocity:
+      //         // user must scroll past 65% before committing to contact form.
+      //         snapTo: (value) => (value > 0.65 ? 1 : 0),
+      //         duration: { min: 0.2, max: 0.4 },
+      //         delay: 0.8,
+      //         ease: "power2.inOut",
+      //       },
+      //     },
+      //   })
+      //   .to(["#about-text", "#about-contact-info"], {
+      //     y: -120,
+      //     opacity: 0,
+      //     duration: 0.6,
+      //   })
+      //   .to("#contact-form", { y: 0, opacity: 1, duration: 0.8 }, "<+=0.3");
 
       // Re-measures and rebuilds the hero layer after the real viewport
       // changes (iOS toolbars settling, rotation, window resize). Returns
@@ -313,9 +313,9 @@ export default function Home() {
         setupResponsive();
         // The contact form's offscreen anchor embeds a height; re-anchor it
         // as long as its intro hasn't run (afterwards the timeline owns it)
-        if (aboutTl.progress() === 0) {
-          gsap.set("#contact-form", { y: h, opacity: 0 });
-        }
+        // if (aboutTl.progress() === 0) {
+        //   gsap.set("#contact-form", { y: h, opacity: 0 });
+        // }
         ScrollTrigger.refresh();
       };
     },
@@ -537,7 +537,10 @@ export default function Home() {
               gsap.set("#logo-white-overlay", { opacity: 0 });
               gsap.set("#headline", { y: 0, scale: headlineInitScale });
               gsap.set("#contact-form", { y: vh, opacity: 0 });
-              gsap.set(["#about-text", "#about-contact-info"], { y: 0, opacity: 1 });
+              gsap.set(["#about-text", "#about-contact-info"], {
+                y: 0,
+                opacity: 1,
+              });
             }
             // (No overlay reset here for scrolled states: the forced-render
             // seek before the slide already initialized every timeline with
@@ -596,10 +599,33 @@ export default function Home() {
             </p>
           </div>
           <div id="contact" className="shrink-0 text-center absolute bottom-8">
-            <p className="text-black text-lg font-extralight">
-              Seville, Spain &nbsp;&middot;&nbsp; +34 695 135 544
-              &nbsp;&middot;&nbsp; wuj890312@gmail.com
-            </p>
+            {/* <p className="text-black text-lg font-extralight">Seville, Spain</p> */}
+            <div className="flex flex-col-reverse sm:flex-row items-center gap-1 sm:gap-4">
+              <span className="text-black text-lg font-extralight flex items-center gap-1">
+                wuj890312@gmail.com{" "}
+                <Link href={"#contact-form"}>
+                  <ArrowUpRight className="font-extralight" />
+                </Link>
+                <span className="text-3xl hidden sm:block">&middot;</span>
+              </span>
+              <span className="text-black text-lg font-extralight flex items-center gap-1">
+                Whatsapp
+                <Link href={"https://wa.me/34695135544"}>
+                  <ArrowUpRight />
+                </Link>
+                <span className="text-3xl hidden sm:block">&middot;</span>
+              </span>
+              <span className="text-black text-lg font-extralight flex items-center gap-1">
+                LinkedIn
+                <Link
+                  href={
+                    "https://www.linkedin.com/in/wilber-ulloa-jorge-868960a0/"
+                  }
+                >
+                  <ArrowUpRight />
+                </Link>
+              </span>
+            </div>
           </div>
         </div>
         <About />
@@ -608,7 +634,7 @@ export default function Home() {
       {/* Code — fixed overlay, starts off-screen right, slides in on toggle */}
       <section
         id="code"
-        className="fixed inset-0 z-40 overflow-hidden bg-foreground"
+        className="fixed inset-0 overflow-hidden bg-foreground"
       >
         <Code />
       </section>
