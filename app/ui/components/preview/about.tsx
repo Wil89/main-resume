@@ -23,7 +23,7 @@ export function About() {
         <div className="flex flex-col-reverse sm:flex-row items-center gap-1 sm:gap-4">
           <span className="text-gray-400 text-lg font-extralight flex items-center gap-1">
             wuj890312@gmail.com{" "}
-            <a target="_blank" href="" rel="noopener noreferrer">
+            <a href="mailto:wuj890312@gmail.com" rel="noopener noreferrer">
               <ArrowUpRight className="font-extralight" />
             </a>
             <span className="text-3xl hidden sm:block">&middot;</span>
