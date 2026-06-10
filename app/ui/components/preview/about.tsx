@@ -4,7 +4,7 @@ export function About() {
   return (
     <div
       id="about"
-      className="relative h-dvh overflow-hidden bg-foreground py-60 px-[15%] flex flex-col items-center"
+      className="relative h-dvh overflow-hidden bg-foreground py-40 sm:py-60 px-8 sm:px-[15%] flex flex-col items-center"
     >
       <p id="about-text" className="text-gray-500 text-lg text-left">
         Senior Frontend Engineer with 8+ years building web products for

@@ -21,9 +21,13 @@ export function Code() {
         </div>
       </div>
 
-      {/* Right panel — scrolls independently, scrollbar hidden */}
+      {/* Right panel — scrolls independently, scrollbar hidden.
+          id="code-scroll" marks it as the only scrollable area of the overlay
+          (the page.tsx wheel/touch blocker lets its events through), and
+          overscroll-contain stops boundary scrolls from chaining to the page. */}
       <div
-        className="flex-1 overflow-y-scroll pt-12 sm:pt-48 pb-20 pr-6 sm:pr-20 pl-6 [&::-webkit-scrollbar]:hidden mask-t-from-90% mask-t-to-100%"
+        id="code-scroll"
+        className="flex-1 overflow-y-scroll overscroll-contain pt-12 sm:pt-48 pb-20 pr-6 sm:pr-20 pl-6 [&::-webkit-scrollbar]:hidden mask-t-from-90% mask-t-to-100%"
         style={{ scrollbarWidth: "none" }}
       >
         <div className="flex flex-col justify-start">
