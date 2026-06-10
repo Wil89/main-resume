@@ -122,7 +122,7 @@ export default function Home() {
           scrollTrigger: {
             trigger: "#hero",
             start: "top top",
-            end: "+=100%",
+            end: "+=150%",
             // 0.3 on mobile: a touch swipe can jump 600px in 80ms — scrub:1
             // means the animation would trail 1 second behind the finger.
             scrub: 0.3,
