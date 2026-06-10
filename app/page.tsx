@@ -9,7 +9,6 @@ import { NavToggle } from "./ui/components/preview/nav-toggle";
 import { About } from "./ui/components/preview/about";
 import { Code } from "./ui/components/code/code";
 import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
 
 export type ToggleValue = "Preview" | "Code";
 
@@ -64,8 +63,11 @@ export default function Home() {
       const heroEl = document.getElementById("hero")!;
 
       // Common (the logo/toggle initial positions are owned by the
-      // responsive setup blocks below, which both run on setup)
-      gsap.set("#code", { xPercent: 100 });
+      // responsive setup blocks below, which both run on setup).
+      // visibility: the JSX ships the overlay with the `invisible` class so
+      // the server-rendered frame can't flash it; un-hide it here in the same
+      // pre-paint tick that moves it off-screen.
+      gsap.set("#code", { xPercent: 100, visibility: "visible" });
 
       // All vertical math measures the hero element (h-dvh) instead of
       // window.innerHeight: on iOS Safari the two disagree while the dynamic
@@ -639,10 +641,13 @@ export default function Home() {
         <About />
       </section>
 
-      {/* Code — fixed overlay, starts off-screen right, slides in on toggle */}
+      {/* Code — fixed overlay, starts off-screen right, slides in on toggle.
+          `invisible` hides it in the server-rendered HTML so it doesn't cover
+          the page during the pre-hydration window (GSAP only positions it
+          off-screen once useGSAP runs); GSAP flips visibility back on. */}
       <section
         id="code"
-        className="fixed inset-0 overflow-hidden bg-foreground"
+        className="fixed inset-0 overflow-hidden bg-foreground invisible"
       >
         <Code />
       </section>
