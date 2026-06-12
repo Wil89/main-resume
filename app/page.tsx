@@ -112,8 +112,10 @@ export default function Home() {
             scale: MOBILE_TOGGLE_SCALE,
             transformOrigin: "top right",
           });
+          gsap.set("#nav-blur", { opacity: 1 });
         } else {
           gsap.set("#contact", { opacity: 0, y: 300 });
+          gsap.set("#nav-blur", { opacity: 0 });
           gsap.set(logoEl, {
             x: vw / 2 - logoW / 2,
             y: vh / 2 - logoH,
@@ -171,7 +173,10 @@ export default function Home() {
             { y: -(vh / 3.5), scale: 1, ease: "power2.inOut" },
             "<",
           )
-          .to("#contact", { opacity: 1, y: 0, ease: "power2.inOut" }, "<");
+          .to("#contact", { opacity: 1, y: 0, ease: "power2.inOut" }, "<")
+          // Second half of the scrub only — the blur belongs to the corner
+          // position, not the transition.
+          .to("#nav-blur", { opacity: 1, duration: 0.25, ease: "none" }, 0.25);
 
         // Every other ScrollTrigger is disabled while in Code mode — a
         // freshly created one must match, or it scrubs behind the overlay.
@@ -201,7 +206,9 @@ export default function Home() {
             scale: 1,
             transformOrigin: "50% 50%",
           });
+          gsap.set("#nav-blur", { opacity: 1 });
         } else {
+          gsap.set("#nav-blur", { opacity: 0 });
           gsap.set(logoEl, {
             x: vw / 2 - LOGO_W / 2,
             y: vh / 2 - LOGO_H / 2,
@@ -245,7 +252,10 @@ export default function Home() {
             "#headline",
             { y: -(vh / 3), scale: 1, ease: "power2.inOut" },
             "<",
-          );
+          )
+          // Second half of the scrub only — the blur belongs to the corner
+          // position, not the transition.
+          .to("#nav-blur", { opacity: 1, duration: 0.25, ease: "none" }, 0.25);
 
         if (sectionRef.current === "Code") heroTl.scrollTrigger?.disable(false);
       };
@@ -497,6 +507,7 @@ export default function Home() {
           delay: 0.2,
         }),
       );
+      track(gsap.to("#nav-blur", { opacity: 1, duration: 0.5 }));
     } else {
       const savedScroll = savedScrollRef.current;
       // Use a 50 px threshold instead of === 0: normalizeScroll can leave
@@ -556,6 +567,7 @@ export default function Home() {
           }),
         );
         track(gsap.to("#logo-white-overlay", { opacity: 0, duration: 0.3 }));
+        track(gsap.to("#nav-blur", { opacity: 0, duration: 0.3 }));
         track(
           gsap.to("#headline", {
             y: 0,
@@ -600,6 +612,7 @@ export default function Home() {
               });
               gsap.set(toggleEl, { x: vw / 2 - toggleW / 2, y: PAD, scale: 1 });
               gsap.set("#logo-white-overlay", { opacity: 0 });
+              gsap.set("#nav-blur", { opacity: 0 });
               gsap.set("#headline", { y: 0, scale: headlineInitScale });
               gsap.set("#contact-form", { y: vh, opacity: 0 });
               gsap.set(["#about-text", "#about-contact-info"], {
@@ -630,6 +643,16 @@ export default function Home() {
 
   return (
     <main ref={containerRef} className="overflow-x-hidden">
+      {/* Progressive blur under the corner nav: scrolling content melts into
+          the top edge instead of colliding with the logo. Sits between the
+          page (z-auto) and the logo/toggle (z-50); the bottom mask feathers
+          the blur out so there's no hard line. Faded in by the hero timeline
+          as the logo reaches the corner, and by the Code-mode toggle. */}
+      <div
+        id="nav-blur"
+        aria-hidden
+        className="fixed top-0 inset-x-0 h-32 z-40 pointer-events-none opacity-0 backdrop-blur-md mask-b-from-40% mask-b-to-100%"
+      />
       {/* Fixed elements — positioned by GSAP from hero-center to nav positions */}
       <div id="logo" className="fixed top-0 left-0 opacity-0 z-50">
         {/* fill requires an explicit-size parent — responsive size lives here, not on <Image>.
