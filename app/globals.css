@@ -44,3 +44,15 @@ body {
   background: var(--foreground);
   color: var(--background);
 }
+
+/* Staggered entrance for the skill tags when switching groups */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

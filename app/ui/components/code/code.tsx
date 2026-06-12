@@ -1,7 +1,12 @@
 import Image from "next/image";
 import { Courier_Prime } from "next/font/google";
 import { Experience } from "./experience";
-import { WORK_EXPERIENCES, EDUCATION } from "@/app/data/constants";
+import {
+  WORK_EXPERIENCES,
+  EDUCATION,
+  SKILL_GROUPS,
+  LANGUAGES,
+} from "@/app/data/constants";
 import { Education } from "./education";
 
 const courierPrime = Courier_Prime({
@@ -72,30 +77,15 @@ export function Code() {
             Technical Skills
           </h2>
           <ul className="border-l border-gray-400 py-2 pl-4 pr-0 mr-0 sm:px-10 ml-2 sm:mx-4 my-4">
-            <li className="text-neon-blue text-lg sm:text-xl font-bold">
-              <span className="text-neon-purple">Frontend:</span> React.js,
-              Next.js, TypeScript, JavaScript (ES6+), Tailwind CSS,
-              styled-components, Redux, Material UI, HTML5, CSS3, SASS
-            </li>
-            <li className="text-neon-blue text-lg sm:text-xl font-bold">
-              <span className="text-neon-purple">Testing:</span> Jest, React
-              Testing Library, Storybook
-            </li>
-            <li className="text-neon-blue text-lg sm:text-xl font-bold">
-              <span className="text-neon-purple">Backend:</span> Node.js,
-              Python, Django, Ruby on Rails, REST APIs, Google App Engine
-            </li>
-            <li className="text-neon-blue text-lg sm:text-xl font-bold">
-              <span className="text-neon-purple">AI & Agents:</span> LangGraph,
-              MCP (Model Context Protocol), Agentic AI workflows, Supabase
-            </li>
-            <li className="text-neon-blue text-lg sm:text-xl font-bold">
-              <span className="text-neon-purple">Mobile:</span> React Native
-            </li>
-            <li className="text-neon-blue text-lg sm:text-xl font-bold">
-              <span className="text-neon-purple">Tools & Methods:</span> GitHub,
-              Agile/Scrum, CI/CD, Figma
-            </li>
+            {SKILL_GROUPS.map((group) => (
+              <li
+                key={group.id}
+                className="text-neon-blue text-lg sm:text-xl font-bold"
+              >
+                <span className="text-neon-purple">{group.label}:</span>{" "}
+                {group.skills.join(", ")}
+              </li>
+            ))}
           </ul>
           <h2 className="text-neon-yellow text-lg sm:text-xl font-bold">
             Professional Experience
@@ -111,6 +101,20 @@ export function Code() {
           <div className="border-l border-gray-400 py-2 pl-4 pr-0 ml-2 mr-0 sm:px-10 sm:mx-4 my-2">
             {EDUCATION.map((e) => (
               <Education key={e.id} {...e} />
+            ))}
+          </div>
+          <h2 className="text-neon-yellow text-lg sm:text-xl font-bold">
+            Languages
+          </h2>
+          <div className="border-l border-gray-400 py-2 pl-4 pr-0 ml-2 mr-0 sm:px-10 sm:mx-4 my-2">
+            {LANGUAGES.map((l) => (
+              <p
+                key={l.id}
+                className="text-neon-blue text-lg sm:text-xl font-bold"
+              >
+                {l.name} &nbsp;&middot;&nbsp;{" "}
+                <span className="text-neon-green">{l.level}</span>
+              </p>
             ))}
           </div>
         </div>

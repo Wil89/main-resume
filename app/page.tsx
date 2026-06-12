@@ -7,6 +7,11 @@ import { useGSAP } from "@gsap/react";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { NavToggle } from "./ui/components/preview/nav-toggle";
 import { About } from "./ui/components/preview/about";
+import { Metrics } from "./ui/components/preview/metrics";
+import { ExperienceTimeline } from "./ui/components/preview/experience-timeline";
+import { Skills } from "./ui/components/preview/skills";
+import { EducationLanguages } from "./ui/components/preview/education-languages";
+import { ResumeCta } from "./ui/components/preview/cta";
 import { Code } from "./ui/components/code/code";
 import { ArrowUpRight } from "lucide-react";
 
@@ -276,7 +281,61 @@ export default function Home() {
         })
         .to("#logo-white-overlay", { opacity: 1, ease: "none" }, 0);
 
-      // Phase 3: About pins — text slides up, contact form rises from below
+      // Phase 3: gentle reveal for the resume sections below About.
+      // `once: true` matters beyond taste: played triggers kill themselves,
+      // and seekToTargetScroll skips the live ones (a non-scrub animation
+      // can't be meaningfully seeked to a partial scroll progress).
+      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
+        gsap.from(el, {
+          y: 40,
+          autoAlpha: 0,
+          duration: 0.7,
+          ease: "power2.out",
+          scrollTrigger: { trigger: el, start: "top 85%", once: true },
+        });
+      });
+
+      // Phase 3b: timeline choreography — the rail draws itself with the
+      // scroll (scrubbed, so it participates in seekToTargetScroll) while
+      // each job pops its dot and staggers its content in from the left
+      // (once-triggers, same Code-mode rules as the reveals above).
+      gsap.from("#experience-rail", {
+        scaleY: 0,
+        transformOrigin: "top",
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#experience-list",
+          start: "top 80%",
+          end: "bottom 70%",
+          scrub: 1,
+        },
+      });
+      gsap.utils
+        .toArray<HTMLElement>("#experience-list li")
+        .forEach((item) => {
+          gsap
+            .timeline({
+              scrollTrigger: { trigger: item, start: "top 80%", once: true },
+            })
+            .from(item.querySelector("[data-timeline-dot]"), {
+              scale: 0,
+              duration: 0.5,
+              ease: "back.out(3)",
+            })
+            .from(
+              item.querySelectorAll("[data-timeline-content] > *"),
+              {
+                x: -48,
+                autoAlpha: 0,
+                duration: 0.6,
+                ease: "power3.out",
+                stagger: 0.1,
+              },
+              "<0.1",
+            );
+        });
+
+      // Phase 4: About pins — text slides up, contact form rises from below
       // gsap.set("#contact-form", { y: heroEl.offsetHeight, opacity: 0 });
       // const aboutTl = gsap
       //   .timeline({
@@ -457,7 +516,9 @@ export default function Home() {
       const seekToTargetScroll = () => {
         ScrollTrigger.getAll().forEach((st) => {
           const anim = st.animation;
-          if (!anim) return;
+          // `once` triggers are play-once reveals, not scrubbed timelines —
+          // seeking them to a partial progress would leave elements half-faded.
+          if (!anim || st.vars.once) return;
           const range = st.end - st.start;
           const progress =
             range > 0
@@ -608,7 +669,7 @@ export default function Home() {
               <span className="text-black text-lg font-extralight flex items-center gap-1">
                 wuj890312@gmail.com{" "}
                 <a href="mailto:wuj890312@gmail.com" rel="noopener noreferrer">
-                  <ArrowUpRight className="font-extralight" />
+                  <ArrowUpRight className="font-extralight" size={18} />
                 </a>
                 <span className="text-3xl hidden sm:block">&middot;</span>
               </span>
@@ -619,7 +680,7 @@ export default function Home() {
                   href={"https://wa.me/34695135544"}
                   rel="noopener noreferrer"
                 >
-                  <ArrowUpRight />
+                  <ArrowUpRight size={18} />
                 </a>
                 <span className="text-3xl hidden sm:block">&middot;</span>
               </span>
@@ -632,13 +693,18 @@ export default function Home() {
                   }
                   rel="noopener noreferrer"
                 >
-                  <ArrowUpRight />
+                  <ArrowUpRight size={18} />
                 </a>
               </span>
             </div>
           </div>
         </div>
         <About />
+        <Metrics />
+        <ExperienceTimeline />
+        <Skills />
+        <EducationLanguages />
+        <ResumeCta onViewCode={() => handleToggleSection("Code")} />
       </section>
 
       {/* Code — fixed overlay, starts off-screen right, slides in on toggle.

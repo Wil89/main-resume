@@ -24,7 +24,9 @@ export function Education({
           {centerName} &nbsp;&middot;&nbsp; {dates && dates}
         </p>
         {description && (
-          <p className="text-neon-green text-lg sm:text-xl text-neon-blue font-bold">{description}</p>
+          <p className="text-neon-green text-lg sm:text-xl font-bold">
+            {description}
+          </p>
         )}
       </div>
     </div>
